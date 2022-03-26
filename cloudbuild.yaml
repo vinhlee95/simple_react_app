@@ -4,10 +4,7 @@ steps:
     args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/simple-react-app:$SHORT_SHA', '.' ]
 
   - name: 'gcr.io/cloud-builders/docker'
-    id: 'Push production image to Container registry'
-    args: ['push', 'gcr.io/$PROJECT_ID/simple-react-app:$SHORT_SHA']
-
-  - name: 'gcr.io/cloud-builders/docker'
     id: 'Run unit tests'
-    args: ['run', 'gcr.io/$PROJECT_ID/simple-react-app:$SHORT_SHA', 'npm', 'run', 'test']
-    
+    args: ['run', 'gcr.io/$PROJECT_ID/simple-react-app:$SHORT_SHA', 'npm', 'run', 'test:ci']
+
+images: ['gcr.io/$PROJECT_ID/simple-react-app:$SHORT_SHA']
