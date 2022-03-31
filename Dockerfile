@@ -1,5 +1,5 @@
-# pull the official base image
-FROM node:17-alpine
+# BUILD PHASE
+FROM node:17-alpine as builder
 
 # set working direction
 WORKDIR /app
@@ -8,10 +8,11 @@ WORKDIR /app
 COPY package.json .
 RUN npm i
 
-# add app
-COPY . .
+COPY . . 
 
-EXPOSE 3000
+RUN npm run build
 
-# start app
-CMD ["npm", "start"]
+# RUN PHASE
+FROM nginx:alpine
+
+COPY --from=builder /app/build /usr/share/nginx/html

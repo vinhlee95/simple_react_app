@@ -1,10 +1,9 @@
-version: '3.8'
+version: '3.9'
 services:
   frontend:
-    build: .
-    container_name: frontend
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: frontend-prod
     ports:
-      - '3000:3000'
-    volumes:
-      - .:/app
-      - ./app/node_modules
+      - '8080:80'
