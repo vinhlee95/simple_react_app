@@ -3,7 +3,7 @@ services:
   frontend:
     build: 
       context: .
-      dockerfile: Dockerfile.dev
+      target: dependencies
     container_name: frontend-dev
     ports:
       - '3000:3000'

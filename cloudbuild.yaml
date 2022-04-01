@@ -1,7 +1,7 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Build dependencies'
-    args: [ 'build', '-f', 'Dockerfile.dev', '-t', 'gcr.io/$PROJECT_ID/simple-react-app-dependencies:$SHORT_SHA', '.' ]
+    args: [ 'build', '--target', 'dependencies', '-t', 'gcr.io/$PROJECT_ID/simple-react-app-dependencies:$SHORT_SHA', '.' ]
 
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Run unit tests from dependencies'
