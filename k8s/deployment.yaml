@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-react-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-react-app
+  template:
+    metadata:
+      labels:
+        app: simple-react-app
+    spec:
+      containers:
+        - name: simple-react-app
+          # TODO: use $PROJECT_ID variable here
+          # image: 'gcr.io/learn-gcloud-build/simple-react-app:<%= current_sha %>'
+          image: 'vinhlee95/simple-react-app:deployment'
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: entrypoint
+spec:
+  type: NodePort
+  selector:
+    app: simple-react-app
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 30001
