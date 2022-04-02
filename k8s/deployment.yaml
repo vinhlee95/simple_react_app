@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: simple-react-app
-          image: 'gcr.io/learn-gcloud-build-123/simple-react-app:<%= current_sha %>'
+          image: REACT_IMAGE_NAME
           ports:
             - containerPort: 80
 
