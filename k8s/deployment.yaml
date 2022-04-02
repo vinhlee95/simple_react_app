@@ -15,13 +15,12 @@ spec:
       containers:
         - name: simple-react-app
           # TODO: use $PROJECT_ID variable here
-          # image: 'gcr.io/learn-gcloud-build/simple-react-app:<%= current_sha %>'
-          image: 'vinhlee95/simple-react-app:deployment'
-          imagePullPolicy: Always
+          # image: 'vinhlee95/simple-react-app:deployment'
+          image: 'gcr.io/learn-gcloud-build-123/simple-react-app:v1'
           ports:
             - containerPort: 80
-      restartPolicy: Always
 
+# NodePort service for local development only
 ---
 apiVersion: v1
 kind: Service
