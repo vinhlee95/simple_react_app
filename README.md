@@ -1,70 +1,59 @@
-# Getting Started with Create React App
+# Simple React app
+A demo app with a CI/CD pipe line within Google ecosystem:
+* Cloud Build for building and publishing Docker image
+* Container registry for hosting the Docker image
+* Kubernetes engine (GKE) for deploying the production cluster
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Local development
+### Start up docker env
+```shell
+docker-compose -f docker-compose.dev.yaml up --build
+```
+Then access development server at `localhost:3000`.
 
-## Available Scripts
+Try to update something e.g. on `App.js` -> Save -> The app should hot-reload.
 
-In the project directory, you can run:
+## Production deployment
+The CI/CD pipeline is tightly integrated within Google ecosystem (Cloud Build -> Container registry -> GKE). Thus to deploy this to production, we need to:
+1. Create new project on Google Cloud
+2. Enable APIs (Cloud build, Container registry and Kubernetes API)
+3. Create new Kubernetes cluster for the project
+4. Setup a new build trigger on Cloud build
+  * In the trigger settings, add 2 substitution variables `_COMPUTE_ZONE` and `_CONTAINER_CLUSTER`. They are used in [cloudbuild.yaml](./cloudbuild.yaml).
+  * Their values should indicate the [`zone`](https://cloud.google.com/compute/docs/regions-zones) and `name` of the Kubernetes cluster. For example `europe-west1-b` and `production-cluster`.
+5. Commit something to `main` branch and push. The build should be triggered. 
 
-### `npm start`
+## Useful commands for locally testing
+### Submit a build config
+```shell
+gcloud builds submit --config my_build_config.yaml
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Some issues with M1 Macs
+### Run locally-built image in GKE clusters
+GCP does not support Docker images built in ARM64 architecture. Thus we can get `exec format error` if we try to:
+1. Locally build the Docker image `docker build -t gcr.io/my-app:latest .`
+2. Push the image to container registry `docker push gcr.io/my-app:latest .`
+3. Use that image in Kubernetes deployment config e.g. [`deployment.yaml`](./k8s/deployment.yaml)\
+4. Test the deployment by applying it: `kubectl apply -f .`
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+In order to have that "workflow" above, we need to build an `amd64` image:
+```shell
+docker buildx build --platform linux/amd64 -t gcr.io/my-app:latest .
+docker push gcr.io/my-app:latest
+```
 
-### `npm test`
+To verify the image's architecture, inspect the pushed Docker image:
+```shell
+docker inspect gcr.io/my-app:latest
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Useful resources
+https://stackoverflow.com/questions/66920645/exec-format-error-when-running-containers-build-with-apple-m1-chip-arm-based
+https://medium.com/geekculture/from-apple-silicon-to-heroku-docker-registry-without-swearing-36a2f59b30a3
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Useful docs and tutorials
+https://cloud.google.com/build/docs/build-push-docker-image
+https://kubernetes.io/docs/reference/kubectl/cheatsheet/
+https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app#option_a_use
+https://medium.com/bb-tutorials-and-thoughts/gcp-deploying-react-app-with-nginx-on-gke-466e9a465516
