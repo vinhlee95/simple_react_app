@@ -1,21 +1,16 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Build dependencies'
-    args: [ 'build', '--target', 'dependencies', '-t', 'gcr.io/$PROJECT_ID/simple-react-app-dependencies:$SHORT_SHA', '.' ]
+    args: [ 'build', '--target', 'dependencies', '-t', 'gcr.io/$PROJECT_ID/simple-react-app-dependencies:latest', '.' ]
 
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Run unit tests from dependencies'
-    args: ['run', 'gcr.io/$PROJECT_ID/simple-react-app-dependencies:$SHORT_SHA', 'npm', 'run', 'test:ci']
+    args: ['run', 'gcr.io/$PROJECT_ID/simple-react-app-dependencies:latest', 'npm', 'run', 'test:ci']
     waitFor: ['Build dependencies']
 
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Build production image'
-    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/simple-react-app:$SHORT_SHA', '.' ]
-
-  - name: ubuntu
-    id: 'Updating Deployment with built image'
-    args: ['bash','-c','sed -i "s,REACT_IMAGE_NAME,gcr.io/$PROJECT_ID/simple-react-app:$SHORT_SHA," deployment.yaml']
-    waitFor: ['Build production image']
+    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/simple-react-app:latest', '.' ]
 
   # Deploy container image to GKE
   - name: 'gcr.io/cloud-builders/gke-deploy'
@@ -23,9 +18,9 @@ steps:
     args:
       - run
       - --filename=k8s
-      - --image=gcr.io/$PROJECT_ID/simple-react-app:$SHORT_SHA
+      - --image=gcr.io/$PROJECT_ID/simple-react-app:latest
       - --location=${_CLOUDSDK_COMPUTE_ZONE}
       - --cluster=${_CLOUDSDK_CONTAINER_CLUSTER}
-    waitFor: ['Updating Deployment with built image']
+    waitFor: ['Build production image']
 
-images: ['gcr.io/$PROJECT_ID/simple-react-app:$SHORT_SHA']
+images: ['gcr.io/$PROJECT_ID/simple-react-app:latest']
