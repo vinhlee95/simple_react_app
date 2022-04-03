@@ -23,6 +23,6 @@ steps:
       - run
       - --filename=k8s
       - --image=gcr.io/$PROJECT_ID/simple-react-app:latest
-      - --location=${_CLOUDSDK_COMPUTE_ZONE}
-      - --cluster=${_CLOUDSDK_CONTAINER_CLUSTER}
+      - --location=europe-north1-a
+      - --cluster=prod-cluster
     waitFor: ['Push production image to Cloud registry']
