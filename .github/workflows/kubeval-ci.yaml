@@ -1,0 +1,12 @@
+on: [push, pull_request]
+name: Validate K8S manifests
+jobs:
+  kubeval:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@main
+    - name: test manifests folder
+      uses: instrumenta/kubeval-action@master
+      with: 
+       files: ./k8s
+      
