@@ -44,6 +44,13 @@ spec:
   selector:
     app: simple-react-app
   ports:
+  # Nginx port
   - port: 80
+    name: nginx-port
     targetPort: 80
     nodePort: 30001
+  # React dev server port
+  - port: 3000
+    name: react-dev-server-port
+    targetPort: 3000
+    nodePort: 30003

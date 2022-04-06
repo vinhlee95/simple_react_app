@@ -29,6 +29,14 @@ The CI/CD pipeline is tightly integrated within Google ecosystem (Cloud Build ->
 gcloud builds submit --config my_build_config.yaml
 ```
 
+## Skaffold
+Use Skaffold to run the app in a local cluster:
+```shell
+brew install skaffold
+skaffold dev
+```
+Then the app is running locally at localhost:30001 (NodePort)
+
 ## Some issues with M1 Macs
 ### Run locally-built image in GKE clusters
 GCP does not support Docker images built in ARM64 architecture. Thus we can get `exec format error` if we try to:

@@ -1,0 +1,22 @@
+apiVersion: skaffold/v2beta28
+kind: Config
+metadata:
+  name: simple-react-app
+build:
+  local:
+    # Does not push the image to the registry: https://skaffold.dev/docs/pipeline-stages/builders/#local-build
+    push: false
+  artifacts:
+  - image: gcr.io/learn-gcloud-build-123/simple-react-app
+    docker:
+      dockerfile: Dockerfile
+      # We can specify dependencies target here so that the docker to limit the built to dependencies step (= start React local dev server without build and start with nginx)
+      # target: dependencies
+    sync:
+      manual:
+        - src: 'src/*.js'
+          dest: .
+deploy:
+  kubectl:
+    manifests:
+    - k8s/deployment.yaml
