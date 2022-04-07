@@ -6,6 +6,8 @@ build:
   local:
     # Does not push the image to the registry: https://skaffold.dev/docs/pipeline-stages/builders/#local-build
     push: false
+  googleCloudBuild:
+    projectId: learn-gcloud-build-123
   artifacts:
   - image: gcr.io/learn-gcloud-build-123/simple-react-app
     docker:
