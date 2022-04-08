@@ -6,8 +6,9 @@ build:
   local:
     # Does not push the image to the registry: https://skaffold.dev/docs/pipeline-stages/builders/#local-build
     push: false
-  googleCloudBuild:
-    projectId: learn-gcloud-build-123
+  # Enable this -> Skaffold will build the image on Cloud build and deploy to k8s cluster
+  # googleCloudBuild:
+  #   projectId: learn-gcloud-build-123
   artifacts:
   - image: gcr.io/learn-gcloud-build-123/simple-react-app
     docker:
@@ -21,4 +22,4 @@ build:
 deploy:
   kubectl:
     manifests:
-    - k8s/deployment.yaml
+    - k8s/*

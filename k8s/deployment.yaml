@@ -17,21 +17,20 @@ spec:
           image: 'gcr.io/learn-gcloud-build-123/simple-react-app'
           ports:
             - containerPort: 80
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: simple-react-app
-  labels:
-    run: simple-react-app
+  name: simple-react-app-service
 spec:
-  ports:
-  - port: 80
-    protocol: TCP
   selector:
     app: simple-react-app
-  type: LoadBalancer
+  ports:
+    - name: auth
+      protocol: TCP
+      port: 80
+      targetPort: 80
+
 
 # NodePort service for local development only
 ---
