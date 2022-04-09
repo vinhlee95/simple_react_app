@@ -56,6 +56,12 @@ To verify the image's architecture, inspect the pushed Docker image:
 docker inspect gcr.io/my-app:latest
 ```
 
+## Todos
+
+- [ ] Inject env variables to React JS code during compiling. 
+https://www.freecodecamp.org/news/how-to-implement-runtime-environment-variables-with-create-react-app-docker-and-nginx-7f9d42a91d70/
+
+
 ### Useful resources
 https://stackoverflow.com/questions/66920645/exec-format-error-when-running-containers-build-with-apple-m1-chip-arm-based
 https://medium.com/geekculture/from-apple-silicon-to-heroku-docker-registry-without-swearing-36a2f59b30a3

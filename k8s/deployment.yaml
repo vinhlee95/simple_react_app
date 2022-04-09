@@ -17,6 +17,12 @@ spec:
           image: 'gcr.io/learn-gcloud-build-123/simple-react-app'
           ports:
             - containerPort: 80
+          env:
+            - name: REACT_APP_API_KEY
+              value: 'Hello world'
+          envFrom:
+          - configMapRef:
+              name: react-config
 ---
 apiVersion: v1
 kind: Service
